@@ -187,15 +187,15 @@ app.post('/place_order', function (req, res) {
 
             con.query(query, [values], (err, result) => {
 
-                for (let i = 0; i<cart.length; i++){
+                for (let i = 0; i < cart.length; i++) {
                     var query = "INSERT INTO order_items(order_id, product_id, product_name, product_price,	product_image, product_quantity, order_date ) VALUES ?";
 
                     var values = [
                         [id, cart[i].id, cart[i].name, cart[i].price, cart[i].image, cart[i].quantity, new Date()]
                     ];
-                    con.query(query, [values], (err, result) =>{})
+                    con.query(query, [values], (err, result) => { })
                 }
-                    res.redirect('/payment')
+                res.redirect('/payment')
             })
         }
     });
@@ -205,7 +205,7 @@ app.get('/payment', function (req, res) {
     res.render('pages/payments')
 });
 
-app.get('/verify_payment', function(req,res){
+app.get('/verify_payment', function (req, res) {
     var transaction_id = req.query.transaction_id;
     var oder_id = req.session.order_id;
 
@@ -222,22 +222,22 @@ app.get('/verify_payment', function(req,res){
         } else {
 
             var query = "INSERT INTO payments(order_id, transaction_id, date) VALUES ?";
-            var values = [ [order_id, transaction_id, newDate()] ]
-            con.query(query,[values],(err,result)=>{
-                con.query("UPDATE orders SET status = 'paid' where id = '"+ order_id +"'", (err,result)=>{})
+            var values = [[order_id, transaction_id, newDate()]]
+            con.query(query, [values], (err, result) => {
+                con.query("UPDATE orders SET status = 'paid' where id = '" + order_id + "'", (err, result) => { })
                 res.redirect('/thank_you')
             })
         }
-})
+    })
 
 });
 
-app.get('/thank_you',function(req,res){
+app.get('/thank_you', function (req, res) {
     var order_id = req.session.order_id;
-    res.render("pages/thank_you",{order_id:order_id})
+    res.render("pages/thank_you", { order_id: order_id })
 });
 
-app.get('/single_product', function(req,res){
+app.get('/single_product', function (req, res) {
 
     var id = req.query.id;
 
@@ -248,13 +248,13 @@ app.get('/single_product', function(req,res){
         database: "node_project"
     })
 
-    con.query(" SELECT * FROM products where id = '"+id+"' ", (err, result) => {
+    con.query(" SELECT * FROM products where id = '" + id + "' ", (err, result) => {
         res.render('pages/single_product', { result: result });
     })
 });
 
-app.get('/products', function(req,res){
-    
+app.get('/products', function (req, res) {
+
     var con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -267,6 +267,6 @@ app.get('/products', function(req,res){
     })
 });
 
-app.get('/about', function(req,res){
+app.get('/about', function (req, res) {
     res.render('pages/about');
 });
